@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.repository.CrudRepository;
@@ -29,7 +30,7 @@ import java.util.List;
 
 @SpringBootApplication
 public class PsmApiToSqliteApplication implements CommandLineRunner {
-    private final Logger logger = LoggerFactory.getLogger(PsmApiToSqliteApplication.class);
+    private static final Logger logger = LoggerFactory.getLogger(PsmApiToSqliteApplication.class);
     private static final String BASE_URL = "https://psm-api.bvl.bund.de/ords/psm/api-v1/";
     private static final OkHttpClient client = new OkHttpClient();
     private static final HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
@@ -43,17 +44,13 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
     private static final String RESPONSE_BODY_PROPERTY_ITEMS = "items";
 
     private JSONArray itemList = new JSONArray();
-    private List<ISetItemPK> saveItemWithEmbeddedPKList = new ArrayList<>();
-    private List<ISetItem> saveItemList = new ArrayList<>();
 
-    private ModelMapper modelMapper;
-    private ApplicationContext context;
-    private Repositories repositories;
+    private final ModelMapper modelMapper;
+    private final Repositories repositories;
     @Autowired
     PsmApiToSqliteApplication(ModelMapper modelMapper, ApplicationContext context)
     {
         this.modelMapper = modelMapper;
-        this.context = context;
         this.repositories = new Repositories(context);
         this.modelMapper.getConfiguration()
                 .setMatchingStrategy(MatchingStrategies.STRICT)
@@ -61,10 +58,19 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
                 .setFieldAccessLevel(Configuration.AccessLevel.PRIVATE);
         this.modelMapper.addConverter(new BooleanToStringConverter());
     }
+
+    public static void main(String[] args) {
+        logger.info("STARTING THE APPLICATION");
+        SpringApplication.run(PsmApiToSqliteApplication.class, args);
+        logger.info("APPLICATION FINISHED");
+    }
+
     @Override
     public void run(String... args) throws RuntimeException {
         for (PsmApiEnum.Endpoint endpoint: PsmApiEnum.Endpoint.values())
         {
+            logger.info("Prepare: " + endpoint.path.toUpperCase());
+
             int offset = 0;
             int limit = 10000;
 
@@ -78,10 +84,12 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
             do {
                 urlBuilder.setQueryParameter(QUERY_PARAMETER_OFFSET, Integer.toString(offset));
                 String callURL = urlBuilder.build().toString();
+                logger.info("call: " + callURL);
                 hasMore = transformPageRequest(endpoint, callURL, repo);
                 offset += limit;
             }
             while (hasMore);
+            logger.info("Done: " + endpoint.path.toUpperCase());
         }
     }
 
@@ -94,13 +102,14 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
             Response response = call.execute();
             if(response.isSuccessful() && response.body() != null)
             {
-
+                logger.info("data received status: " + response.code());
                 ICompPK pk = null;
                 JSONObject json = (JSONObject) parser.parse(response.body().string());
                 hasMore = (boolean) json.get(RESPONSE_BODY_PROPERTY_HAS_MORE);
                 itemList = (JSONArray) json.get(RESPONSE_BODY_PROPERTY_ITEMS);
-                saveItemWithEmbeddedPKList = new ArrayList<>();
-                saveItemList = new ArrayList<>();
+                List<ISetItemPK> saveItemWithEmbeddedPKList = new ArrayList<>();
+                List<ISetItem> saveItemList = new ArrayList<>();
+                logger.info("transform data");
                 for (Object jsonObject: itemList) {
                     final JSONObject jones = (JSONObject) jsonObject;
                     final String jsonInString = objectMapper.writeValueAsString(objectMapper.readValue(jones.toJSONString(), endpoint.inputType));
@@ -117,6 +126,7 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
                         saveItemList.add(setItem);
                     }
                 }
+                logger.info("save data");
                 if(!saveItemWithEmbeddedPKList.isEmpty()){
                     repo.saveAll(saveItemWithEmbeddedPKList);
                 }
