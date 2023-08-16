@@ -30,23 +30,28 @@ import java.util.List;
 
 @SpringBootApplication
 public class PsmApiToSqliteApplication implements CommandLineRunner {
+	
     private static final Logger logger = LoggerFactory.getLogger(PsmApiToSqliteApplication.class);
+    
     private static final String BASE_URL = "https://psm-api.bvl.bund.de/ords/psm/api-v1/";
+    
     private static final OkHttpClient client = new OkHttpClient();
     private static final HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
+    
     private static final JSONParser parser = new JSONParser();
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
+    private final ModelMapper modelMapper;
+    private final Repositories repositories;
+    
     private static final String QUERY_PARAMETER_LIMIT = "limit";
     private static final String QUERY_PARAMETER_OFFSET = "offset";
 
     private static final String RESPONSE_BODY_PROPERTY_HAS_MORE = "hasMore";
     private static final String RESPONSE_BODY_PROPERTY_ITEMS = "items";
-
+    
     private JSONArray itemList = new JSONArray();
-
-    private final ModelMapper modelMapper;
-    private final Repositories repositories;
+    
     @Autowired
     PsmApiToSqliteApplication(ModelMapper modelMapper, ApplicationContext context)
     {

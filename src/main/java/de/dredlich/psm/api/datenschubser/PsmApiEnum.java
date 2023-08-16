@@ -20,6 +20,16 @@ public interface PsmApiEnum {
         AWG_WARTEZEIT("awg_wartezeit", AwgWartezeit.class, de.dredlich.psm.api.datenschubser.model.awg.AwgWartezeit.class, null),
         AWG_WARTEZEIT_AUSG_KULTUR("awg_wartezeit_ausg_kultur", AwgWartezeitAusgKultur.class, de.dredlich.psm.api.datenschubser.model.awg.AwgWartezeitAusgKultur.class, AwgWartezeitAusgKulturId.class),
         AWG_ZEITPUNKT("awg_zeitpunkt", AwgZeitpunkt.class, de.dredlich.psm.api.datenschubser.model.awg.AwgZeitpunkt.class, AwgZeitpunktId.class),
+        AWG_ZULASSUNG("awg_zulassung", AwgZulassung.class, de.dredlich.psm.api.datenschubser.model.awg.AwgZulassung.class, null),
+        GHS_GEFAHRENHINWEISE("ghs_gefahrenhinweise", GhsGefahrenhinweise.class, de.dredlich.psm.api.datenschubser.model.ghs.GhsGefahrenhinweise.class, GhsGefahrenhinweiseId.class),
+        GHS_GEFAHRENSYMBOLE("ghs_gefahrensymbole", GhsGefahrensymbole.class, de.dredlich.psm.api.datenschubser.model.ghs.GhsGefahrensymbole.class, GhsGefahrensymboleId.class),
+        GHS_SICHERHEITSHINWEISE("ghs_sicherheitshinweise", GhsSicherheitshinweise.class, de.dredlich.psm.api.datenschubser.model.ghs.GhsSicherheitshinweise.class, GhsSicherheitshinweiseId.class),
+        GHS_SIGNALWOERTER("ghs_signalwoerter", GhsSignalwoerter.class, de.dredlich.psm.api.datenschubser.model.ghs.GhsSignalwoerter.class, GhsSignalwoerterId.class),
+        HINWEIS("hinweis", Hinweis.class, de.dredlich.psm.api.datenschubser.model.Hinweis.class, HinweisId.class),
+        KODE("kode", Kode.class, de.dredlich.psm.api.datenschubser.model.Kode.class, KodeId.class),
+        KODELISTE("kodeliste", Kodeliste.class, de.dredlich.psm.api.datenschubser.model.Kodeliste.class, null),
+        KODELISTE_FELDNAME("kodeliste_feldname", KodelisteFeldname.class, de.dredlich.psm.api.datenschubser.model.KodelisteFeldname.class, KodelisteFeldnameId.class),
+        KULTUR_GRUPPE("kultur_gruppe", KulturGruppe.class, de.dredlich.psm.api.datenschubser.model.KulturGruppe.class, KulturGruppeId.class),
         MITTEL("mittel", Mittel.class, de.dredlich.psm.api.datenschubser.model.mittel.Mittel.class, null),
         MITTEL_ABGELAUFEN("mittel_abgelaufen", MittelAbgelaufen.class, de.dredlich.psm.api.datenschubser.model.mittel.MittelAbgelaufen.class, MittelAbgelaufenId.class),
         MITTEL_ABPACKUNG("mittel_abpackung", MittelAbpackung.class, de.dredlich.psm.api.datenschubser.model.mittel.MittelAbpackung.class, MittelAbpackungId.class),
@@ -35,7 +45,8 @@ public interface PsmApiEnum {
         WIRKSTOFF("wirkstoff", Wirkstoff.class, de.dredlich.psm.api.datenschubser.model.Wirkstoff.class, null),
         WIRKSTOFF_GEHALT("wirkstoff_gehalt", WirkstoffGehalt.class, de.dredlich.psm.api.datenschubser.model.WirkstoffGehalt.class, WirkstoffGehaltId.class),
         ZUSATZSTOFF("zusatzstoff", Zusatzstoff.class, de.dredlich.psm.api.datenschubser.model.Zusatzstoff.class, null),
-        ZUSATZSTOFF_VERTRIEB("zusatzstoff_vertrieb", ZusatzstoffVertrieb.class, de.dredlich.psm.api.datenschubser.model.ZusatzstoffVertrieb.class, ZusatzstoffVertriebId.class);
+        ZUSATZSTOFF_VERTRIEB("zusatzstoff_vertrieb", ZusatzstoffVertrieb.class, de.dredlich.psm.api.datenschubser.model.ZusatzstoffVertrieb.class, ZusatzstoffVertriebId.class)
+        ;
 
         String path;
         Class inputType;

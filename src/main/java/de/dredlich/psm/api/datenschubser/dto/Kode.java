@@ -41,12 +41,6 @@ public class Kode implements Serializable {
 	@JsonProperty("sperre")
     private String     sperre       ;
 
-
-    //----------------------------------------------------------------------
-    // ENTITY LINKS ( RELATIONSHIP )
-    //----------------------------------------------------------------------
-    private Kodeliste  kodeliste2   ;
-
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
     //----------------------------------------------------------------------
@@ -95,18 +89,6 @@ public class Kode implements Serializable {
     public String getSperre() {
         return this.sperre;
     }
-
-
-    //----------------------------------------------------------------------
-    // GETTERS & SETTERS FOR LINKS
-    //----------------------------------------------------------------------
-    public void setKodeliste2( Kodeliste kodeliste2 ) {
-        this.kodeliste2 = kodeliste2;
-    }
-    public Kodeliste getKodeliste2() {
-        return this.kodeliste2;
-    }
-
 
     //----------------------------------------------------------------------
     // toString METHOD

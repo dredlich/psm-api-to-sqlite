@@ -15,8 +15,7 @@ public class AwgZulassung implements ISetItem {
 	private String awgId;
 	private Date zulEnde;
 
-	public AwgZulassung() {
-	}
+	public AwgZulassung() {}
 
 	public AwgZulassung(Date zulEnde) {
 		this.zulEnde = zulEnde;
