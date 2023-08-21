@@ -10,7 +10,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Domain class for entity "Mittel"
@@ -44,16 +43,6 @@ public class Mittel implements Serializable {
 
 	@JsonProperty("zul_ende")
     private Date       zulEnde      ;
-
-
-    //----------------------------------------------------------------------
-    // ENTITY LINKS ( RELATIONSHIP )
-    //----------------------------------------------------------------------
-    private List<MittelGefahrenSymbol> listOfMittelGefahrenSymbol ;
-    private List<MittelVertrieb> listOfMittelVertrieb ;
-    private List<Antrag> listOfAntrag ;
-    private List<MittelWirkbereich> listOfMittelWirkbereich ;
-    private List<AwgPartner> listOfAwgPartner ;
 
     //----------------------------------------------------------------------
     // CONSTRUCTOR(S)
@@ -103,45 +92,6 @@ public class Mittel implements Serializable {
     }
     public Date getZulEnde() {
         return this.zulEnde;
-    }
-
-
-    //----------------------------------------------------------------------
-    // GETTERS & SETTERS FOR LINKS
-    //----------------------------------------------------------------------
-    public void setListOfMittelGefahrenSymbol( List<MittelGefahrenSymbol> listOfMittelGefahrenSymbol ) {
-        this.listOfMittelGefahrenSymbol = listOfMittelGefahrenSymbol;
-    }
-    public List<MittelGefahrenSymbol> getListOfMittelGefahrenSymbol() {
-        return this.listOfMittelGefahrenSymbol;
-    }
-
-    public void setListOfMittelVertrieb( List<MittelVertrieb> listOfMittelVertrieb ) {
-        this.listOfMittelVertrieb = listOfMittelVertrieb;
-    }
-    public List<MittelVertrieb> getListOfMittelVertrieb() {
-        return this.listOfMittelVertrieb;
-    }
-
-    public void setListOfAntrag( List<Antrag> listOfAntrag ) {
-        this.listOfAntrag = listOfAntrag;
-    }
-    public List<Antrag> getListOfAntrag() {
-        return this.listOfAntrag;
-    }
-
-    public void setListOfMittelWirkbereich( List<MittelWirkbereich> listOfMittelWirkbereich ) {
-        this.listOfMittelWirkbereich = listOfMittelWirkbereich;
-    }
-    public List<MittelWirkbereich> getListOfMittelWirkbereich() {
-        return this.listOfMittelWirkbereich;
-    }
-
-    public void setListOfAwgPartner( List<AwgPartner> listOfAwgPartner ) {
-        this.listOfAwgPartner = listOfAwgPartner;
-    }
-    public List<AwgPartner> getListOfAwgPartner() {
-        return this.listOfAwgPartner;
     }
 
 

@@ -24,8 +24,11 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.support.Repositories;
 
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 
 
 @SpringBootApplication
@@ -39,7 +42,10 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
     private static final HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
     
     private static final JSONParser parser = new JSONParser();
-    private static final ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper =
+            new ObjectMapper()
+                    .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"))
+                    .setTimeZone(TimeZone.getTimeZone("CET"));
 
     private final ModelMapper modelMapper;
     private final Repositories repositories;
@@ -127,7 +133,8 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
                     }
                     else
                     {
-                        final ISetItem setItem = (ISetItem) modelMapper.map(objectMapper.readValue(jsonInString, endpoint.inputType), endpoint.outputType);
+                        Object obj = objectMapper.readValue(jsonInString, endpoint.inputType);
+                        final ISetItem setItem = (ISetItem) modelMapper.map(obj, endpoint.outputType);
                         saveItemList.add(setItem);
                     }
                 }

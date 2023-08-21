@@ -3,6 +3,7 @@ package de.dredlich.psm.api.datenschubser.model.mittel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,24 +20,24 @@ import jakarta.persistence.*;
 public class Mittel implements ISetItem {
 
 	private String kennr;
-	private LocalDate zulErstmaligAm;
+	private Date zulErstmaligAm;
 	private String mittelname;
 	private String formulierungArt;
-	private LocalDate zulEnde;
-	private LocalDate aufbrauchFrist;
-	private LocalDate bescheidDatum;
+	private Date zulEnde;
+	private Date aufbrauchFrist;
+	private Date bescheidDatum;
 	private Boolean geringesRisiko;
 
 	public Mittel() {
 	}
 
 	public Mittel(String kennr,
-				  LocalDate zulErstmaligAm,
+				  Date zulErstmaligAm,
 				  String mittelname,
 				  String formulierungArt,
-				  LocalDate zulEnde,
-				  LocalDate aufbrauchFrist,
-				  LocalDate bescheidDatum,
+				  Date zulEnde,
+				  Date aufbrauchFrist,
+				  Date bescheidDatum,
 				  Boolean geringesRisiko)
 	{
 		this.kennr = kennr;
@@ -59,12 +60,13 @@ public class Mittel implements ISetItem {
 		this.kennr = kennr;
 	}
 
+	@Temporal(value = TemporalType.DATE)
 	@Column(name = "ZUL_ERSTMALIG_AM", length = 7)
-	public LocalDate getZulErstmaligAm() {
+	public Date getZulErstmaligAm() {
 		return this.zulErstmaligAm;
 	}
 
-	public void setZulErstmaligAm(LocalDate zulErstmaligAm) {
+	public void setZulErstmaligAm(Date zulErstmaligAm) {
 		this.zulErstmaligAm = zulErstmaligAm;
 	}
 
@@ -86,30 +88,31 @@ public class Mittel implements ISetItem {
 		this.formulierungArt = formulierungArt;
 	}
 
+	@Temporal(value = TemporalType.DATE)
 	@Column(name = "ZUL_ENDE", length = 7)
-	public LocalDate getZulEnde() {
+	public Date getZulEnde() {
 		return this.zulEnde;
 	}
 
-	public void setZulEnde(LocalDate zulEnde) {
+	public void setZulEnde(Date zulEnde) {
 		this.zulEnde = zulEnde;
 	}
 
 	@Column(name = "AUFBRAUCHFRIST", length = 7)
-	public LocalDate getAufbrauchFrist() {
+	public Date getAufbrauchFrist() {
 		return this.aufbrauchFrist;
 	}
 
-	public void setAufbrauchFrist(LocalDate aufbrauchFrist) {
+	public void setAufbrauchFrist(Date aufbrauchFrist) {
 		this.aufbrauchFrist = aufbrauchFrist;
 	}
 
 	@Column(name = "BESCHEID_DATUM", length = 7)
-	public LocalDate getBescheidDatum() {
+	public Date getBescheidDatum() {
 		return this.bescheidDatum;
 	}
 
-	public void setBescheidDatum(LocalDate bescheidDatum) {
+	public void setBescheidDatum(Date bescheidDatum) {
 		this.bescheidDatum = bescheidDatum;
 	}
 
