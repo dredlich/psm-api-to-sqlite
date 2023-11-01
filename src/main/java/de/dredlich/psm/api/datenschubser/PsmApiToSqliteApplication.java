@@ -24,7 +24,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.support.Repositories;
 
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,27 +31,20 @@ import java.util.TimeZone;
 
 
 @SpringBootApplication
-public class PsmApiToSqliteApplication implements CommandLineRunner {
-	
+public class PsmApiToSqliteApplication implements CommandLineRunner
+{
     private static final Logger logger = LoggerFactory.getLogger(PsmApiToSqliteApplication.class);
-    
     private static final String BASE_URL = "https://psm-api.bvl.bund.de/ords/psm/api-v1/";
-    
     private static final OkHttpClient client = new OkHttpClient();
     private static final HttpUrl.Builder urlBuilder = HttpUrl.parse(BASE_URL).newBuilder();
-    
     private static final JSONParser parser = new JSONParser();
-    private static final ObjectMapper objectMapper =
-            new ObjectMapper()
-                    .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"))
-                    .setTimeZone(TimeZone.getTimeZone("CET"));
-
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss"))
+            .setTimeZone(TimeZone.getTimeZone("CET"));
     private final ModelMapper modelMapper;
     private final Repositories repositories;
-    
     private static final String QUERY_PARAMETER_LIMIT = "limit";
     private static final String QUERY_PARAMETER_OFFSET = "offset";
-
     private static final String RESPONSE_BODY_PROPERTY_HAS_MORE = "hasMore";
     private static final String RESPONSE_BODY_PROPERTY_ITEMS = "items";
     
@@ -70,21 +62,22 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
         this.modelMapper.addConverter(new BooleanToStringConverter());
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         logger.info("STARTING THE APPLICATION");
         SpringApplication.run(PsmApiToSqliteApplication.class, args);
         logger.info("APPLICATION FINISHED");
     }
 
     @Override
-    public void run(String... args) throws RuntimeException {
+    public void run(String... args) throws RuntimeException
+    {
         for (PsmApiEnum.Endpoint endpoint: PsmApiEnum.Endpoint.values())
         {
-            logger.info("Prepare: " + endpoint.path.toUpperCase());
+            logger.info("PREPARE: " + endpoint.path.toUpperCase());
 
             int offset = 0;
             int limit = 10000;
-
             CrudRepository repo = (CrudRepository) repositories.getRepositoryFor(endpoint.outputType).get();
 
             urlBuilder.setQueryParameter(QUERY_PARAMETER_LIMIT, Integer.toString(limit));
@@ -92,25 +85,34 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
 
             boolean hasMore = false;
             itemList = new JSONArray();
-            do {
+            do
+            {
                 urlBuilder.setQueryParameter(QUERY_PARAMETER_OFFSET, Integer.toString(offset));
                 String callURL = urlBuilder.build().toString();
-                logger.info("call: " + callURL);
+                logger.info("START REQUEST: " + callURL);
                 hasMore = transformPageRequest(endpoint, callURL, repo);
                 offset += limit;
             }
             while (hasMore);
-            logger.info("Done: " + endpoint.path.toUpperCase());
+            logger.info("END REQUEST: " + endpoint.path.toUpperCase());
         }
     }
 
-    private boolean transformPageRequest(PsmApiEnum.Endpoint endpoint, String callURL, CrudRepository repo) throws RuntimeException {
+    private boolean transformPageRequest(PsmApiEnum.Endpoint endpoint, String callURL, CrudRepository repo) throws RuntimeException
+    {
         boolean hasMore = false;
         Request request = new Request.Builder().url(callURL).build();
         Call call = client.newCall(request);
         try
         {
             Response response = call.execute();
+            if(!response.isSuccessful() && !response.isRedirect())
+            {
+                if(response.code() == 503)
+                {
+                    logger.info("SERVER ERROR: " + response.code() + " " + response.message());
+                }
+            }
             if(response.isSuccessful() && response.body() != null)
             {
                 logger.info("data received status: " + response.code());
@@ -121,7 +123,8 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
                 List<ISetItemPK> saveItemWithEmbeddedPKList = new ArrayList<>();
                 List<ISetItem> saveItemList = new ArrayList<>();
                 logger.info("transform data");
-                for (Object jsonObject: itemList) {
+                for (Object jsonObject: itemList)
+                {
                     final JSONObject jones = (JSONObject) jsonObject;
                     final String jsonInString = objectMapper.writeValueAsString(objectMapper.readValue(jones.toJSONString(), endpoint.inputType));
                     if(null != endpoint.idType)
@@ -139,10 +142,12 @@ public class PsmApiToSqliteApplication implements CommandLineRunner {
                     }
                 }
                 logger.info("save data");
-                if(!saveItemWithEmbeddedPKList.isEmpty()){
+                if(!saveItemWithEmbeddedPKList.isEmpty())
+                {
                     repo.saveAll(saveItemWithEmbeddedPKList);
                 }
-                if (!saveItemList.isEmpty()){
+                if (!saveItemList.isEmpty())
+                {
                     repo.saveAll(saveItemList);
                 }
             }
